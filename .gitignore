@@ -157,4 +157,4 @@ dmypy.json
 cython_debug/
 
 secrets.toml
-firestore-key.json
+googleSheets-key.json

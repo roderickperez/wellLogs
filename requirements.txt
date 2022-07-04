@@ -1,2 +1,4 @@
+# requirements.txt
 streamlit
 google-cloud-firestore
+gsheetsdb==0.1.13.1
