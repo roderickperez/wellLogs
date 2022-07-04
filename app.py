@@ -1,30 +1,38 @@
 import streamlit as st
 from google.cloud import firestore
+from google.oauth2.service_account import Credentials
+
+# db = firestore.Client.from_service_account_json("firestore-key.json")
 
 import json
 key_dict = json.loads(st.secrets["textkey"])
-creds = service_account.Credentials.from_service_account_info(key_dict)
+creds = Credentials.from_service_account_info(key_dict)
 db = firestore.Client(credentials=creds, project="welllogwebapp-355315")
 
 # Streamlit widgets to let a user create a new post
-title = st.text_input("Post title")
-url = st.text_input("Post url")
-submit = st.button("Submit new post")
+name = st.text_input("Well Name")
+xLoc = st.text_input("X Location")
+yLoc = st.text_input("Y Location")
+submit = st.button("Add New Well")
 
 # Once the user has submitted, upload it to the database
-if title and url and submit:
-	doc_ref = db.collection("posts").document(title)
+if name and xLoc and yLoc and submit:
+	doc_ref = db.collection("wells").document(name)
 	doc_ref.set({
-		"title": title,
-		"url": url
+		"name": name,
+		"xLoc": xLoc,
+        "yLoc": yLoc
 	})
 
 # And then render each post, using some light Markdown
-posts_ref = db.collection("posts")
-for doc in posts_ref.stream():
-	post = doc.to_dict()
-	title = post["title"]
-	url = post["url"]
+wells_ref = db.collection("wells")
 
-	st.subheader(f"Post: {title}")
-	st.write(f":link: [{url}]({url})")
+for doc in wells_ref.stream():
+    well = doc.to_dict()
+    name = well["name"]
+    xLoc = well["xLoc"]
+    yLoc = well["yLoc"]
+
+    st.write("Well Name: ", name)
+    st.write("X Location: ", xLoc)
+    st.write("Y Location: ", yLoc)
